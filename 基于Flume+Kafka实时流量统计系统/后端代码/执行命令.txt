@@ -1,0 +1,15 @@
+## 定时
+- 关闭 /sbin/service crond stop
+- 重启 /sbin/service crond restart
+
+## Kafka
+- 开启服务 kafka-server-start.sh -daemon /home/hadoop/app/kafka/config/server.properties
+- 开启消费者 kafka-console-consumer.sh --zookeeper example:2181 --topic streamingtopic
+
+## Flume
+- 开启服务
+flume-ng agent --name exec-memory-kafka --conf $FLUME_HOME/conf --conf-file /home/hadoop/app/flume/conf/exec-memory-kafka.conf -Dflume.root.logger=INFO,console
+
+## 提交后端作业
+spark-submit --master local[1] --class  com.example.spark.scala.project.spark.StatStreamingApp --jars $(echo /home/hadoop/app/hbase/lib/*.jar | tr ' ' ',') --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.2.0 /home/hadoop/lib/BSSpark-1.0.jar example:2181 test streamingtopic 1 
+
